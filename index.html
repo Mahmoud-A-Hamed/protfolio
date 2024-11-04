@@ -26,12 +26,6 @@
                         <button id="noButton">لا</button>
                 </div>
         </div>
-        <!-- like button -->
-        <div id="likeSection">
-            <button id="likeButton" class="btn">أعجبني</button>
-            <p id="likeCount">عدد الإعجابات: 0</p>
-            <p id="likeMessage" style="color: red; display: none;"></p> <!-- رسالة الإعجاب أو الخطأ -->
-        </div>
         
         
     <!-- Header Start-->
@@ -236,61 +230,7 @@
             document.getElementById("contactForm").reset();
         });
 
-   // button like
-let hasLiked = localStorage.getItem('hasLiked') === 'true'; // تحقق مما إذا كان الزائر قد أعجب بالفعل
-let likeCount = 0; // عدد الإعجابات
 
-// دالة لحفظ بيانات الإعجاب في Realtime Database
-function storeLikeData() {
-    if (hasLiked) {
-        showMessage("لقد أعجبت الصفحة بالفعل!"); // عرض الرسالة في الصفحة
-        return;
-    }
-    
-    const likesRef = ref(db, 'likes');
-    const newLikeRef = push(likesRef);
-    set(newLikeRef, {
-        timestamp: new Date().toISOString()
-    })
-    .then(() => {
-        hasLiked = true; // تعيين العلم إلى true
-        localStorage.setItem('hasLiked', 'true'); // حفظ حالة الإعجاب في localStorage
-        likeCount++;
-        document.getElementById("likeCount").innerText = `عدد الإعجابات: ${likeCount}`;
-        console.log("تم حفظ بيانات الإعجاب بنجاح");
-        showMessage("شكرًا على إعجابك!"); // عرض الرسالة في الصفحة
-    })
-    .catch((error) => {
-        console.error("حدث خطأ أثناء حفظ بيانات الإعجاب: ", error);
-        showMessage("حدث خطأ أثناء الإعجاب. يرجى المحاولة مرة أخرى."); // عرض رسالة خطأ في الصفحة
-    });
-}
-
-// عرض عدد الإعجابات عند تحميل الصفحة
-function loadLikeCount() {
-    const likesRef = ref(db, 'likes');
-    onValue(likesRef, (snapshot) => {
-        likeCount = snapshot.size; // الحصول على عدد الإعجابات
-        document.getElementById("likeCount").innerText = `عدد الإعجابات: ${likeCount}`;
-    });
-}
-
-// دالة لعرض الرسالة في الصفحة
-function showMessage(message) {
-    const messageElement = document.getElementById("likeMessage");
-    messageElement.innerText = message;
-    messageElement.style.display = "block"; // عرض الرسالة
-}
-
-// استدعاء دالة تحميل عدد الإعجابات عند تحميل الصفحة
-document.addEventListener("DOMContentLoaded", () => {
-    loadLikeCount();
-    
-    // ربط زر الإعجاب بحدث النقر
-    document.getElementById("likeButton").addEventListener("click", () => {
-        storeLikeData();
-    });
-});
 
 
     </script>
